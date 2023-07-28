@@ -2,7 +2,6 @@
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 
-
 class Program
 {
 	static void Main(string[] args)
@@ -19,16 +18,21 @@ class Program
 		// Rabbit ile elaqe ucun kanal yaradiriq
 		var channel = connection.CreateModel();
 
+		{
+			// channel.QueueDeclare("hello-queue", true, false, false);
 
-		// Rabbit mq icerisinde queue yaradiriq, false bu queue -lar ramda saxlanir, true olsa Hdd ve ya SSd de 
-		// Subscriber terefde yeniden queue yaradiriqsa, eger bele bir queue varsa error atmir, yox eger yoxdursa onda queue yaradir
-		// ancaq diqqet etmeli oldugumuz yer ondan ibaretdir ki, her 2 queue-nunda gostericileri eyni olmalidir ( yeni QueueDeclare
-		// funksiyasinin gostericileri eyni olmalidir )
+			// "hello-queue"  --> queue -in adidi
+			// true  --> Queuenin ramda yoxsa daimi yaddasda saxlanmasidir (true -> Daimi yaddas)
+			// false --> Subscripe kimi 1 adam qosulacaqsa false, 2+ subscripe olacaqsa true yazriq
+			// false --> Subscripe -in muracieti biten kimi datalarin queue dan silinmesi ( false )
 
-		// channel.QueueDeclare("hello-queue", true, false, false);
+			// Elave xususiyyetler : 
+			// Subscriber terefde yeniden queue yaradiriqsa, eger bele bir queue varsa error atmir, yox eger yoxdursa onda queue yaradir
+			// ancaq diqqet etmeli oldugumuz yer ondan ibaretdir ki, her 2 queue-nunda gostericileri eyni olmalidir ( yeni QueueDeclare
+			// funksiyasinin gostericileri eyni olmalidir )
+		}
 
 		var subscireber = new EventingBasicConsumer(channel);
-
 
 		channel.BasicConsume("hello-queue", true, subscireber);
 
