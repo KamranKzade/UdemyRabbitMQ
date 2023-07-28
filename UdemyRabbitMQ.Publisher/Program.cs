@@ -23,22 +23,47 @@ class Program
 		// true  --> Queuenin ramda yoxsa daimi yaddasda saxlanmasidir (true -> Daimi yaddas)
 		// false --> Subscripe kimi 1 adam qosulacaqsa false, 2+ subscripe olacaqsa true yazriq
 		// false --> Subscripe -in muracieti biten kimi datalarin queue dan silinmesi ( false )
-		
+
+		// 1 Dene Queue uzerinden data gondermek 
+		{
+			// channel.QueueDeclare("hello-queue", true, false, false);
+			// 
+			// string message = "Hello World";
+			// 
+			// var messageBody = Encoding.UTF8.GetBytes(message);
+			// 
+			// // Kanalda data gondermek 
+			// // string.Empty  --> Exchange-in olmamasidir
+			// // "hello-queue" --> hansi queue ile gonderirikse onun adini yaziriq
+			// // null --> gelecek dersde baxacayiq
+			// // messageBody   --> gonderilen message
+			// 
+			// channel.BasicPublish(string.Empty, "hello-queue", null, messageBody);
+			// 
+			// Console.WriteLine("Message gonderilmisdir");
+		}
+
+		// Eyni anda queue uzerinde 50 data gondermek
 		channel.QueueDeclare("hello-queue", true, false, false);
 
-		string message = "Hello World";
+		Enumerable.Range(1, 50).ToList().ForEach(x =>
+		{
 
-		var messageBody = Encoding.UTF8.GetBytes(message);
+			string message = $"Message {x}";
 
-		// Kanalda data gondermek 
-		// string.Empty  --> Exchange-in olmamasidir
-		// "hello-queue" --> hansi queue ile gonderirikse onun adini yaziriq
-		// null --> gelecek dersde baxacayiq
-		// messageBody   --> gonderilen message
+			var messageBody = Encoding.UTF8.GetBytes(message);
 
-		channel.BasicPublish(string.Empty,"hello-queue", null, messageBody);
+			// Kanalda data gondermek 
+			// string.Empty  --> Exchange-in olmamasidir
+			// "hello-queue" --> hansi queue ile gonderirikse onun adini yaziriq
+			// null --> gelecek dersde baxacayiq
+			// messageBody   --> gonderilen message
 
-		Console.WriteLine("Message gonderilmisdir");
+			channel.BasicPublish(string.Empty, "hello-queue", null, messageBody);
+
+			Console.WriteLine($"Message gonderilmisdir: {x}");
+		});
+
 		Console.ReadLine();
 	}
 }

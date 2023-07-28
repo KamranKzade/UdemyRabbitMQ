@@ -32,13 +32,27 @@ class Program
 			// funksiyasinin gostericileri eyni olmalidir )
 		}
 
+		// Subscriber-e datalarin nece nece geleceyini gosteririk (BasicQos)
+		// 0 --> datalarin olcusu ile baglidir
+		// 5 --> gelen datalarin sayi ile baglidir
+		// false --> tek seferde 1 subscriber-e say qeder gelir(5) data,
+		// yox true olarsa subscriber-lerin cemi sayi qeder, datalari bolub verir
+
+		channel.BasicQos(0, 1, false);
+
+		// Nece subscriber varsa, datalara saya bolub gonderecek subscribere 
+		// channel.BasicQos(0, 10, true);
+
 		// Subscriber yaradiriq
 		var subscireber = new EventingBasicConsumer(channel);
 
 		// "hello-queue" --> queue-nin adi
 		// true --> rabitMq-den data gonderilen kimi, subscriberden cavab gelmeden, o datani queuedan silir
 		// subscriber --> subscriber-in adi
-		channel.BasicConsume("hello-queue", true, subscireber);
+		// channel.BasicConsume("hello-queue", true, subscireber);
+
+		channel.BasicConsume("hello-queue", false, subscireber);
+
 
 		// Received --> Subscriber RabitMq-e muraciet edende bu event isleyir
 		subscireber.Received += (object sender, BasicDeliverEventArgs e) =>
@@ -46,7 +60,18 @@ class Program
 			var message = Encoding.UTF8.GetString(e.Body.ToArray());
 
 			Console.WriteLine("Gelen Message: " + message);
+
+			// Gonderilen Queue-den gelen datani silirik
+			// e.DeliveryTag --> RabitMqden gelen data
+			// bool multiple --> memory-de olub, ama subscriber in islemediyi data haqqinda melumati
+			// rabitmq-e xbr vere
+
+			Thread.Sleep(1500);
+
+			channel.BasicAck(e.DeliveryTag, false);
 		};
+
+
 		Console.ReadLine();
 	}
 }
