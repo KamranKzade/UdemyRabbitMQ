@@ -44,22 +44,28 @@ class Program
 		}
 
 		// Eyni anda queue uzerinde 50 data gondermek
-		channel.QueueDeclare("hello-queue", true, false, false);
+		// channel.QueueDeclare("hello-queue", true, false, false);
+
+		// Fanout Exchange ile data gondermek
+		channel.ExchangeDeclare("logs-fanout", durable: true, type: ExchangeType.Fanout);
 
 		Enumerable.Range(1, 50).ToList().ForEach(x =>
 		{
 
-			string message = $"Message {x}";
+			string message = $"log {x}";
 
 			var messageBody = Encoding.UTF8.GetBytes(message);
+			{
+				// Kanalda data gondermek 
+				// string.Empty  --> Exchange-in olmamasidir
+				// "hello-queue" --> hansi queue ile gonderirikse onun adini yaziriq
+				// null --> gelecek dersde baxacayiq
+				// messageBody   --> gonderilen message
+				// channel.BasicPublish(string.Empty, "hello-queue", null, messageBody);
+			}
 
-			// Kanalda data gondermek 
-			// string.Empty  --> Exchange-in olmamasidir
-			// "hello-queue" --> hansi queue ile gonderirikse onun adini yaziriq
-			// null --> gelecek dersde baxacayiq
-			// messageBody   --> gonderilen message
-
-			channel.BasicPublish(string.Empty, "hello-queue", null, messageBody);
+			// Fanout Exchange elave etmek 
+			channel.BasicPublish("logs-fanout", "", null, messageBody);
 
 			Console.WriteLine($"Message gonderilmisdir: {x}");
 		});
