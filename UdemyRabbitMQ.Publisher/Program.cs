@@ -39,7 +39,6 @@ class Program
 		channel.BasicPublish(string.Empty,"hello-queue", null, messageBody);
 
 		Console.WriteLine("Message gonderilmisdir");
-
 		Console.ReadLine();
 	}
 }

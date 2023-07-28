@@ -32,18 +32,21 @@ class Program
 			// funksiyasinin gostericileri eyni olmalidir )
 		}
 
+		// Subscriber yaradiriq
 		var subscireber = new EventingBasicConsumer(channel);
 
+		// "hello-queue" --> queue-nin adi
+		// true --> rabitMq-den data gonderilen kimi, subscriberden cavab gelmeden, o datani queuedan silir
+		// subscriber --> subscriber-in adi
 		channel.BasicConsume("hello-queue", true, subscireber);
 
-		// Dinlemek ucun istifade olunur
+		// Received --> Subscriber RabitMq-e muraciet edende bu event isleyir
 		subscireber.Received += (object sender, BasicDeliverEventArgs e) =>
 		{
 			var message = Encoding.UTF8.GetString(e.Body.ToArray());
 
 			Console.WriteLine("Gelen Message: " + message);
 		};
-
 		Console.ReadLine();
 	}
 }
