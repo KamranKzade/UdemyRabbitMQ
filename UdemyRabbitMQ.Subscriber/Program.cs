@@ -61,13 +61,12 @@ class Program
 
 			Console.WriteLine("Gelen Message: " + message);
 
+
 			// Gonderilen Queue-den gelen datani silirik
 			// e.DeliveryTag --> RabitMqden gelen data
 			// bool multiple --> memory-de olub, ama subscriber in islemediyi data haqqinda melumati
 			// rabitmq-e xbr vere
-
 			Thread.Sleep(1500);
-
 			channel.BasicAck(e.DeliveryTag, false);
 		};
 
