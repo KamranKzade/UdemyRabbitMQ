@@ -79,37 +79,98 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /// Fanout Exchange
 
-using System.Text;
-using RabbitMQ.Client;
+//  using System.Text;
+//  using RabbitMQ.Client;
 
+
+//  class Program
+//  {
+//      static void Main(string[] args)
+//      {
+//          var factory = new ConnectionFactory();
+//          factory.Uri = new Uri("amqps://fmlpbokz:f8hq9qko1fLnHM_dUC324pRqFNCwQsl2@moose.rmq.cloudamqp.com/fmlpbokz");
+
+//          using var connection = factory.CreateConnection();
+
+//          var channel = connection.CreateModel();
+
+//          channel.ExchangeDeclare("logs-fanout", durable: true, type: ExchangeType.Fanout);
+
+//          Enumerable.Range(1, 50).ToList().ForEach(x =>
+//          {
+
+//              string message = $"log {x}";
+
+//              var messageBody = Encoding.UTF8.GetBytes(message);
+
+//              channel.BasicPublish("logs-fanout", "", null, messageBody);
+
+//              Console.WriteLine($"Mesaj gönderilmiştir : {message}");
+
+//          });
+
+//          Console.ReadLine();
+//      }
+//  }
+
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/// Direct Exchange
+
+
+using RabbitMQ.Client;
+using System.Text;
+
+public enum LogNames
+{
+	Critical = 1,
+	Error = 2,
+	Warning = 3,
+	Info = 4
+}
 
 class Program
 {
-    static void Main(string[] args)
-    {
-        var factory = new ConnectionFactory();
-        factory.Uri = new Uri("amqps://fmlpbokz:f8hq9qko1fLnHM_dUC324pRqFNCwQsl2@moose.rmq.cloudamqp.com/fmlpbokz");
+	static void Main(string[] args)
+	{
+		var factory = new ConnectionFactory();
+		factory.Uri = new Uri("amqps://fmlpbokz:f8hq9qko1fLnHM_dUC324pRqFNCwQsl2@moose.rmq.cloudamqp.com/fmlpbokz");
 
-        using var connection = factory.CreateConnection();
+		using var connection = factory.CreateConnection();
 
-        var channel = connection.CreateModel();
+		var channel = connection.CreateModel();
 
-        channel.ExchangeDeclare("logs-fanout", durable: true, type: ExchangeType.Fanout);
+		channel.ExchangeDeclare("logs-direct", durable: true, type: ExchangeType.Direct);
 
-        Enumerable.Range(1, 50).ToList().ForEach(x =>
-        {
+		Enum.GetNames(typeof(LogNames)).ToList().ForEach(x =>
+		{
+			var routeKey = $"route-{x}";
+			var queueName = $"direct-queue-{x}";
 
-            string message = $"log {x}";
+			channel.QueueDeclare(queueName, true, false, false);
+			channel.QueueBind(queueName, "logs-direct", routeKey, null);
 
-            var messageBody = Encoding.UTF8.GetBytes(message);
+		});
 
-            channel.BasicPublish("logs-fanout", "", null, messageBody);
 
-            Console.WriteLine($"Mesaj gönderilmiştir : {message}");
+		Enumerable.Range(1, 50).ToList().ForEach(x =>
+		{
+			LogNames log = (LogNames)new Random().Next(1, 5);
 
-        });
+			string message = $"log-type: {log}";
 
-        Console.ReadLine();
-    }
+			var messageBody = Encoding.UTF8.GetBytes(message);
+
+			var routeKey = $"route-{log}";
+
+			channel.BasicPublish("logs-direct", routeKey, null, messageBody);
+
+			Console.WriteLine($"Log gönderilmiştir : {message}");
+
+		});
+
+		Console.ReadLine();
+	}
 }
-

@@ -89,45 +89,88 @@
 /// Fanout Exchange
 
 
+//  using System.Text;
+//  using RabbitMQ.Client;
+//  using RabbitMQ.Client.Events;
+//  
+//  class Program
+//  {
+//  	static void Main(string[] args)
+//  	{
+//  		var factory = new ConnectionFactory();
+//  		factory.Uri = new Uri("amqps://fmlpbokz:f8hq9qko1fLnHM_dUC324pRqFNCwQsl2@moose.rmq.cloudamqp.com/fmlpbokz");
+//  
+//  		using var connection = factory.CreateConnection();
+//  
+//  		var channel = connection.CreateModel();
+//  
+//  		var randomQueueName = channel.QueueDeclare().QueueName;
+//  		channel.QueueBind(randomQueueName, "logs-fanout", "", null);
+//  
+//  
+//  		channel.BasicQos(0, 1, false);
+//  		var consumer = new EventingBasicConsumer(channel);
+//  
+//  		channel.BasicConsume(randomQueueName, false, consumer);
+//  
+//  		Console.WriteLine("Loglar dinleniyor...");
+//  
+//  		consumer.Received += (object sender, BasicDeliverEventArgs e) =>
+//  		{
+//  			var message = Encoding.UTF8.GetString(e.Body.ToArray());
+//  
+//  			Thread.Sleep(1500);
+//  			Console.WriteLine("Gelen Mesaj:" + message);
+//  
+//  			channel.BasicAck(e.DeliveryTag, false);
+//  		};
+//  
+//  		Console.ReadLine();
+//  	}
+//  
+//  }
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/// Direct Exchange
+
 
 using System.Text;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 
-class program
+class Program
 {
-    static void main(string[] args)
-    {
-        var factory = new ConnectionFactory();
-        factory.Uri = new Uri("amqps://fmlpbokz:f8hq9qko1flnhm_duc324prqfncwqsl2@moose.rmq.cloudamqp.com/fmlpbokz");
+	static void Main(string[] args)
+	{
+		var factory = new ConnectionFactory();
+		factory.Uri = new Uri("amqps://fmlpbokz:f8hq9qko1fLnHM_dUC324pRqFNCwQsl2@moose.rmq.cloudamqp.com/fmlpbokz");
 
-        using var connection = factory.CreateConnection();
+		using var connection = factory.CreateConnection();
 
-        var channel = connection.CreateModel();
-
-        var randomqueuename = channel.QueueDeclare().QueueName;
-        channel.QueueBind(randomqueuename, "logs-fanout", "", null);
+		var channel = connection.CreateModel();
 
 
-        channel.BasicQos(0, 1, false);
-        var consumer = new EventingBasicConsumer(channel);
+		channel.BasicQos(0, 1, false);
+		var consumer = new EventingBasicConsumer(channel);
 
-        channel.BasicConsume(randomqueuename, false, consumer);
+		var queueName = "direct-queue-Critical";
+		channel.BasicConsume(queueName, false, consumer);
 
-        Console.WriteLine("loglar dinleniyor...");
+		Console.WriteLine("Loglar dinleniyor...");
 
-        consumer.Received += (object sender, BasicDeliverEventArgs e) =>
-        {
-            var message = Encoding.UTF8.GetString(e.Body.ToArray());
+		consumer.Received += (object sender, BasicDeliverEventArgs e) =>
+		{
+			var message = Encoding.UTF8.GetString(e.Body.ToArray());
 
-            Thread.Sleep(1500);
-            Console.WriteLine("gelen mesaj:" + message);
+			Thread.Sleep(1500);
+			Console.WriteLine("Gelen mesaj: " + message);
 
-            channel.BasicAck(e.DeliveryTag, false);
-        };
+			File.AppendAllText("log-critical.txt", message + "\n");
 
-    Console.ReadLine();
-    }
+			channel.BasicAck(e.DeliveryTag, false);
+		};
 
+		Console.ReadLine();
+	}
 }
-
