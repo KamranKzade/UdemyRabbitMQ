@@ -19,7 +19,6 @@ public class RabbitMQClientService : IDisposable
 	{
 		_connectionFactory = connectionFactory;
 		_logger = logger;
-		Connect();
 	}
 
 	public IModel Connect()

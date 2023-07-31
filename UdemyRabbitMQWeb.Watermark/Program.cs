@@ -8,6 +8,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 var conn = builder.Configuration.GetConnectionString("RabbitMQ");
+builder.Services.AddSingleton<RabbitMQPublisher>();
 builder.Services.AddSingleton<RabbitMQClientService>();
 builder.Services.AddSingleton(sp => new ConnectionFactory()
 {
