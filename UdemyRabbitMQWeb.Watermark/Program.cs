@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using RabbitMQ.Client;
 using UdemyRabbitMQWeb.Watermark.Models;
 using UdemyRabbitMQWeb.Watermark.Services;
@@ -8,12 +9,13 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 var conn = builder.Configuration.GetConnectionString("RabbitMQ");
-builder.Services.AddSingleton<RabbitMQPublisher>();
-builder.Services.AddSingleton<RabbitMQClientService>();
 builder.Services.AddSingleton(sp => new ConnectionFactory()
 {
-	Uri = new Uri(conn)
+	Uri = new Uri(conn),
+	DispatchConsumersAsync = true
 });
+builder.Services.AddSingleton<RabbitMQPublisher>();
+builder.Services.AddSingleton<RabbitMQClientService>();
 
 
 builder.Services.AddDbContext<AppDbContext>(options =>

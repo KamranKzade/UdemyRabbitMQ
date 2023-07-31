@@ -14,5 +14,5 @@ public class Product
 	[Range(1, 100)] // Araliq 1-100 arasi ola biler Stock
 	public int Stock { get; set; }
 	[StringLength(100)] // Uzunlugu max 100 edirik
-	public string PictureUrl { get; set; }
+	public string ImageName { get; set; }
 }
