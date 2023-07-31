@@ -79,37 +79,37 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /// Fanout Exchange
 
-//  using System.Text;
-//  using RabbitMQ.Client;
-//  
-//  
-//  class Program
-//  {
-//  	static void Main(string[] args)
-//  	{
-//  		var factory = new ConnectionFactory();
-//  		factory.Uri = new Uri("amqps://fmlpbokz:f8hq9qko1fLnHM_dUC324pRqFNCwQsl2@moose.rmq.cloudamqp.com/fmlpbokz");
-//  
-//  		using var connection = factory.CreateConnection();
-//  
-//  		var channel = connection.CreateModel();
-//  
-//  		channel.ExchangeDeclare("logs-fanout", durable: true, type: ExchangeType.Fanout);
-//  
-//  		Enumerable.Range(1, 50).ToList().ForEach(x =>
-//  		{
-//  
-//  			string message = $"log {x}";
-//  
-//  			var messageBody = Encoding.UTF8.GetBytes(message);
-//  
-//  			channel.BasicPublish("logs-fanout", "", null, messageBody);
-//  
-//  			Console.WriteLine($"Mesaj gönderilmiştir : {message}");
-//  
-//  		});
-//  
-//  		Console.ReadLine();
-//  	}
-//  }
+using System.Text;
+using RabbitMQ.Client;
+
+
+class Program
+{
+    static void Main(string[] args)
+    {
+        var factory = new ConnectionFactory();
+        factory.Uri = new Uri("amqps://fmlpbokz:f8hq9qko1fLnHM_dUC324pRqFNCwQsl2@moose.rmq.cloudamqp.com/fmlpbokz");
+
+        using var connection = factory.CreateConnection();
+
+        var channel = connection.CreateModel();
+
+        channel.ExchangeDeclare("logs-fanout", durable: true, type: ExchangeType.Fanout);
+
+        Enumerable.Range(1, 50).ToList().ForEach(x =>
+        {
+
+            string message = $"log {x}";
+
+            var messageBody = Encoding.UTF8.GetBytes(message);
+
+            channel.BasicPublish("logs-fanout", "", null, messageBody);
+
+            Console.WriteLine($"Mesaj gönderilmiştir : {message}");
+
+        });
+
+        Console.ReadLine();
+    }
+}
 
