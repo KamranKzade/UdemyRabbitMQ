@@ -74,13 +74,13 @@ namespace UdemyRabbitMQWeb.Watermark.Controllers
 				var path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images", randomImageName);
 
 
-				await using FileStream stream = new(path, FileMode.Create);
+				using FileStream stream = new(path, FileMode.Create);
 
 
-				await ImageFile.CopyToAsync(stream);
+				ImageFile.CopyToAsync(stream);
 
-
-				_rabbitMQPublisher.Publish(new productImageCreatedEvent() { ImageName = randomImageName });
+				var productImageCreated = new productImageCreatedEvent() { ImageName = randomImageName };
+				_rabbitMQPublisher.Publish(productImageCreated);
 
 				product.ImageName = randomImageName;
 			}

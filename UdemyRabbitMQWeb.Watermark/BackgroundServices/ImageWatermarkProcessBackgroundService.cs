@@ -18,6 +18,7 @@ namespace UdemyRabbitMQWeb.Watermark.BackgroundServices
 		private readonly RabbitMQClientService _rabbitMQClientService;
 		private readonly ILogger<ImageWatermarkProcessBackgroundService> _logger;
 		private IModel _channel;
+
 		public ImageWatermarkProcessBackgroundService(RabbitMQClientService rabbitMQClientService, ILogger<ImageWatermarkProcessBackgroundService> logger)
 		{
 			_rabbitMQClientService = rabbitMQClientService;
@@ -53,7 +54,7 @@ namespace UdemyRabbitMQWeb.Watermark.BackgroundServices
 			{
 				var productImageCreatedEvent = JsonSerializer.Deserialize<productImageCreatedEvent>(Encoding.UTF8.GetString(@event.Body.ToArray()));
 
-				var path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/Images", productImageCreatedEvent.ImageName);
+				var path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\Images", productImageCreatedEvent.ImageName);
 
 				var siteName = "wwww.mysite.com";
 
