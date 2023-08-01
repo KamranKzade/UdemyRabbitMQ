@@ -1,7 +1,6 @@
-﻿namespace UdemyRabbitMQWeb.Watermark.Services
+﻿namespace UdemyRabbitMQWeb.Watermark.Services;
+
+public class productImageCreatedEvent
 {
-	public class productImageCreatedEvent
-	{
-		public string ImageName { get; set; }
-	}
+	public string ImageName { get; set; }
 }
