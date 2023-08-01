@@ -47,6 +47,7 @@ namespace UdemyRabbitMQWeb.ExcelCreate
 				Uri = new Uri(Configuration.GetConnectionString("RabbitMQ")),
 				DispatchConsumersAsync = true
 			});
+			services.AddSingleton<RabbitMQPublisher>();
 			services.AddSingleton<RabbitMQClientService>();
 
 			services.AddControllersWithViews();
