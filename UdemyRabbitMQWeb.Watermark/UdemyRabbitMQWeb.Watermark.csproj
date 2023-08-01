@@ -21,7 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="wwwroot\images\watermark\" />
+    <Folder Include="wwwroot\images\watermarks\" />
   </ItemGroup>
 
 </Project>
