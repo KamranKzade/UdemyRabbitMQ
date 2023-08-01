@@ -1,180 +1,189 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using UdemyRabbitMQWeb.Watermark.Models;
 using UdemyRabbitMQWeb.Watermark.Services;
 
-namespace UdemyRabbitMQWeb.Watermark.Controllers;
-
-public class ProductsController : Controller
+namespace UdemyRabbitMQWeb.Watermark.Controllers
 {
-	private readonly AppDbContext _context;
-	private readonly RabbitMQPublisher _rabbitMQPublisher;
-
-
-
-	public ProductsController(AppDbContext context, RabbitMQPublisher rabbitMQPublisher)
+	public class ProductsController : Controller
 	{
-		_context = context;
-		_rabbitMQPublisher = rabbitMQPublisher;
-	}
+		private readonly AppDbContext _context;
+		private readonly RabbitMQPublisher _rabbitMQPublisher;
 
-	// GET: Products
-	public async Task<IActionResult> Index()
-	{
-		return View(await _context.Products.ToListAsync());
-	}
 
-	// GET: Products/Details/5
-	public async Task<IActionResult> Details(int? id)
-	{
-		if (id == null || _context.Products == null)
+
+		public ProductsController(AppDbContext context, RabbitMQPublisher rabbitMQPublisher)
 		{
-			return NotFound();
+			_context = context;
+			_rabbitMQPublisher = rabbitMQPublisher;
 		}
 
-		var product = await _context.Products
-			.FirstOrDefaultAsync(m => m.Id == id);
-		if (product == null)
+		// GET: Products
+		public async Task<IActionResult> Index()
 		{
-			return NotFound();
+			return View(await _context.Products.ToListAsync());
 		}
 
-		return View(product);
-	}
-
-	// GET: Products/Create
-	public IActionResult Create()
-	{
-		return View();
-	}
-
-	// POST: Products/Create
-	// To protect from overposting attacks, enable the specific properties you want to bind to.
-	// For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-	[HttpPost]
-	[ValidateAntiForgeryToken]
-	public async Task<IActionResult> Create([Bind("Id,Name,Price,Stock,ImageName")] Product product, IFormFile imageFile)
-	{
-		if (!ModelState.IsValid) return View(product);
-
-		if (imageFile is { Length: > 0 })
+		// GET: Products/Details/5
+		public async Task<IActionResult> Details(int? id)
 		{
-			var randomImageName = Guid.NewGuid() + Path.GetExtension(imageFile.FileName);
-
-			var path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images", randomImageName);
-
-			await using FileStream stream = new(path, FileMode.Create);
-
-			await imageFile.CopyToAsync(stream);
-
-			_rabbitMQPublisher.Publish(new productImageCreatedEvent() { ImageName = randomImageName });
-		
-			product.ImageName=randomImageName;
-		}
-
-
-
-		_context.Add(product);
-		await _context.SaveChangesAsync();
-		return RedirectToAction(nameof(Index));
-
-	}
-
-	// GET: Products/Edit/5
-	public async Task<IActionResult> Edit(int? id)
-	{
-		if (id == null || _context.Products == null)
-		{
-			return NotFound();
-		}
-
-		var product = await _context.Products.FindAsync(id);
-		if (product == null)
-		{
-			return NotFound();
-		}
-		return View(product);
-	}
-
-	// POST: Products/Edit/5
-	// To protect from overposting attacks, enable the specific properties you want to bind to.
-	// For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-	[HttpPost]
-	[ValidateAntiForgeryToken]
-	public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Price,Stock,PictureUrl")] Product product)
-	{
-		if (id != product.Id)
-		{
-			return NotFound();
-		}
-
-		if (ModelState.IsValid)
-		{
-			try
+			if (id == null || _context.Products == null)
 			{
-				_context.Update(product);
-				await _context.SaveChangesAsync();
+				return NotFound();
 			}
-			catch (DbUpdateConcurrencyException)
+
+			var product = await _context.Products
+				.FirstOrDefaultAsync(m => m.Id == id);
+			if (product == null)
 			{
-				if (!ProductExists(product.Id))
-				{
-					return NotFound();
-				}
-				else
-				{
-					throw;
-				}
+				return NotFound();
 			}
+
+			return View(product);
+		}
+
+		// GET: Products/Create
+		public IActionResult Create()
+		{
+			return View();
+		}
+
+		// POST: Products/Create
+		// To protect from overposting attacks, enable the specific properties you want to bind to.
+		// For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+		[HttpPost]
+		[ValidateAntiForgeryToken]
+		public async Task<IActionResult> Create([Bind("Id,Name,Price,Stock,ImageName")] Product product, IFormFile ImageFile)
+		{
+
+			if (!ModelState.IsValid) return View(product);
+
+
+			if (ImageFile is { Length: > 0 })
+			{
+				var randomImageName = Guid.NewGuid() + Path.GetExtension(ImageFile.FileName);
+
+
+				var path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images", randomImageName);
+
+
+				await using FileStream stream = new(path, FileMode.Create);
+
+
+				await ImageFile.CopyToAsync(stream);
+
+
+				_rabbitMQPublisher.Publish(new productImageCreatedEvent() { ImageName = randomImageName });
+
+				product.ImageName = randomImageName;
+			}
+
+
+
+
+			_context.Add(product);
+			await _context.SaveChangesAsync();
 			return RedirectToAction(nameof(Index));
 		}
-		return View(product);
-	}
 
-	// GET: Products/Delete/5
-	public async Task<IActionResult> Delete(int? id)
-	{
-		if (id == null || _context.Products == null)
+		// GET: Products/Edit/5
+		public async Task<IActionResult> Edit(int? id)
 		{
-			return NotFound();
+			if (id == null || _context.Products == null)
+			{
+				return NotFound();
+			}
+
+			var product = await _context.Products.FindAsync(id);
+			if (product == null)
+			{
+				return NotFound();
+			}
+			return View(product);
 		}
 
-		var product = await _context.Products
-			.FirstOrDefaultAsync(m => m.Id == id);
-		if (product == null)
+		// POST: Products/Edit/5
+		// To protect from overposting attacks, enable the specific properties you want to bind to.
+		// For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+		[HttpPost]
+		[ValidateAntiForgeryToken]
+		public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Price,Stock,PictureUrl")] Product product)
 		{
-			return NotFound();
+			if (id != product.Id)
+			{
+				return NotFound();
+			}
+
+			if (ModelState.IsValid)
+			{
+				try
+				{
+					_context.Update(product);
+					await _context.SaveChangesAsync();
+				}
+				catch (DbUpdateConcurrencyException)
+				{
+					if (!ProductExists(product.Id))
+					{
+						return NotFound();
+					}
+					else
+					{
+						throw;
+					}
+				}
+				return RedirectToAction(nameof(Index));
+			}
+			return View(product);
 		}
 
-		return View(product);
-	}
-
-	// POST: Products/Delete/5
-	[HttpPost, ActionName("Delete")]
-	[ValidateAntiForgeryToken]
-	public async Task<IActionResult> DeleteConfirmed(int id)
-	{
-		if (_context.Products == null)
+		// GET: Products/Delete/5
+		public async Task<IActionResult> Delete(int? id)
 		{
-			return Problem("Entity set 'AppDbContext.Products'  is null.");
+			if (id == null || _context.Products == null)
+			{
+				return NotFound();
+			}
+
+			var product = await _context.Products
+				.FirstOrDefaultAsync(m => m.Id == id);
+			if (product == null)
+			{
+				return NotFound();
+			}
+
+			return View(product);
 		}
-		var product = await _context.Products.FindAsync(id);
-		if (product != null)
+
+		// POST: Products/Delete/5
+		[HttpPost, ActionName("Delete")]
+		[ValidateAntiForgeryToken]
+		public async Task<IActionResult> DeleteConfirmed(int id)
 		{
-			_context.Products.Remove(product);
+			if (_context.Products == null)
+			{
+				return Problem("Entity set 'AppDbContext.Products'  is null.");
+			}
+			var product = await _context.Products.FindAsync(id);
+			if (product != null)
+			{
+				_context.Products.Remove(product);
+			}
+
+			await _context.SaveChangesAsync();
+			return RedirectToAction(nameof(Index));
 		}
 
-		await _context.SaveChangesAsync();
-		return RedirectToAction(nameof(Index));
-	}
-
-	private bool ProductExists(int id)
-	{
-		return _context.Products.Any(e => e.Id == id);
+		private bool ProductExists(int id)
+		{
+			return _context.Products.Any(e => e.Id == id);
+		}
 	}
 }
