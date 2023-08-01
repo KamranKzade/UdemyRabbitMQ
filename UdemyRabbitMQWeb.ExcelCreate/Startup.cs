@@ -26,19 +26,19 @@ namespace UdemyRabbitMQWeb.ExcelCreate
 		// This method gets called by the runtime. Use this method to add services to the container.
 		public void ConfigureServices(IServiceCollection services)
 		{
+			// Db ile elaqe yaradiriq
 			services.AddDbContext<AppDbContext>(options =>
 			{
 				options.UseSqlServer(Configuration.GetConnectionString("SqlServer"));
 			});
 
+			// Identity ni qeydiyyatdan keciririk
 			services.AddIdentity<IdentityUser, IdentityRole>(opt =>
 			{
 
 				opt.User.RequireUniqueEmail = true;
 
 			}).AddEntityFrameworkStores<AppDbContext>();
-
-
 
 			services.AddControllersWithViews();
 		}
