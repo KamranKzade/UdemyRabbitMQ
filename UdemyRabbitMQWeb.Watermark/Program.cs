@@ -1,8 +1,8 @@
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using RabbitMQ.Client;
+using Microsoft.EntityFrameworkCore;
 using UdemyRabbitMQWeb.Watermark.Models;
 using UdemyRabbitMQWeb.Watermark.Services;
+using UdemyRabbitMQWeb.Watermark.BackgroundServices;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,6 +17,8 @@ builder.Services.AddSingleton(sp => new ConnectionFactory()
 builder.Services.AddSingleton<RabbitMQPublisher>();
 builder.Services.AddSingleton<RabbitMQClientService>();
 
+// ImageWatermark -i projecte elave edirik
+builder.Services.AddHostedService<ImageWatermarkProcessBackgroundService>();
 
 builder.Services.AddDbContext<AppDbContext>(options =>
 {
