@@ -1,12 +1,13 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using System;
+﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
 using UdemyRabbitMQWeb.ExcelCreate.Models;
 using UdemyRabbitMQWeb.ExcelCreate.Services;
+
 
 namespace UdemyRabbitMQWeb.ExcelCreate.Controllers
 {
@@ -51,7 +52,6 @@ namespace UdemyRabbitMQWeb.ExcelCreate.Controllers
 			_rabbitMQPublisher.Publish(new Shared.CreateExcelMessage()
 			{
 				FileId = userfile.Id,
-				UserId = user.Id
 			});
 
 			TempData["StartCreatingExcel"] = true;

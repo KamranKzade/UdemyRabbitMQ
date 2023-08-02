@@ -9,6 +9,5 @@ namespace Shared
 	public class CreateExcelMessage
 	{
         public int FileId { get; set; }
-        public string UserId { get; set; }
     }
 }
