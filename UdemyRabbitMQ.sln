@@ -13,7 +13,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UdemyRabbitMQWeb.Watermark"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UdemyRabbitMQWeb.ExcelCreate", "UdemyRabbitMQWeb.ExcelCreate\UdemyRabbitMQWeb.ExcelCreate.csproj", "{CA7A8448-835F-4CBE-8E05-CDBE34F1FD35}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileCreateWorkerService", "FileCreateWorkerService\FileCreateWorkerService.csproj", "{165807F4-D5F1-4862-97B2-04A544B1D0D1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FileCreateWorkerService", "FileCreateWorkerService\FileCreateWorkerService.csproj", "{165807F4-D5F1-4862-97B2-04A544B1D0D1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharedExcel", "SharedExcel\SharedExcel.csproj", "{432DA633-F95B-488F-86D4-B05AA532A69B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -45,6 +47,10 @@ Global
 		{165807F4-D5F1-4862-97B2-04A544B1D0D1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{165807F4-D5F1-4862-97B2-04A544B1D0D1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{165807F4-D5F1-4862-97B2-04A544B1D0D1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{432DA633-F95B-488F-86D4-B05AA532A69B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{432DA633-F95B-488F-86D4-B05AA532A69B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{432DA633-F95B-488F-86D4-B05AA532A69B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{432DA633-F95B-488F-86D4-B05AA532A69B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

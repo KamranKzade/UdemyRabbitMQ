@@ -20,4 +20,8 @@
     <Folder Include="wwwroot\files\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\SharedExcel\SharedExcel.csproj" />
+  </ItemGroup>
+
 </Project>
