@@ -4,6 +4,5 @@ namespace UdemyRabbitMQWeb.ExcelCreate.Hubs
 {
     public class MyHub: Hub
     {
-
     }
 }

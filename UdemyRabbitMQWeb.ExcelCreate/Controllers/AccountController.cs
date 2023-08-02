@@ -15,11 +15,13 @@ namespace UdemyRabbitMQWeb.ExcelCreate.Controllers
             _signInManager = signInManager;
         }
 
+
         [HttpGet]
         public IActionResult LogIn()
         {
             return View();
         }
+
 
         [HttpPost]
         public async Task<IActionResult> LogIn(string Email, string password)

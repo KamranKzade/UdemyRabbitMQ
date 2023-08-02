@@ -1,6 +1,7 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using System;
 using RabbitMQ.Client;
-using System;
+using Microsoft.Extensions.Logging;
+
 
 namespace UdemyRabbitMQWeb.ExcelCreate.Services
 {
@@ -9,10 +10,10 @@ namespace UdemyRabbitMQWeb.ExcelCreate.Services
 		private IModel _channel;
 		private IConnection _connection;
 		private readonly ConnectionFactory _connectionFactory;
-		public static string ExchangeName = "ExcelDirectExchange";
-		public static string RoutingExcel = "excel-route-file";
+		
 		public static string QueueName = "queue-excel-file";
-
+		public static string RoutingExcel = "excel-route-file";
+		public static string ExchangeName = "ExcelDirectExchange";
 
 		private readonly ILogger<RabbitMQClientService> _logger;
 
@@ -65,5 +66,4 @@ namespace UdemyRabbitMQWeb.ExcelCreate.Services
 			_logger.LogInformation("RabbitMQ ile baglanti kopdu...");
 		}
 	}
-
 }

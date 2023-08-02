@@ -1,7 +1,8 @@
-﻿using System.Text;
+﻿using Shared;
+using System.Text;
 using RabbitMQ.Client;
 using System.Text.Json;
-using Shared;
+
 
 namespace UdemyRabbitMQWeb.ExcelCreate.Services
 {

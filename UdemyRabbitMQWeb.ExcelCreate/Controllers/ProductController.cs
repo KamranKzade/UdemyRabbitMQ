@@ -14,9 +14,8 @@ namespace UdemyRabbitMQWeb.ExcelCreate.Controllers
 	public class ProductController : Controller
 	{
 		private readonly AppDbContext _appDbContext;
-		private readonly UserManager<IdentityUser> _userManager;
-
 		private readonly RabbitMQPublisher _rabbitMQPublisher;
+		private readonly UserManager<IdentityUser> _userManager;
 
 		public ProductController(AppDbContext appDbContext, UserManager<IdentityUser> userManager, RabbitMQPublisher rabbitMQPublisher)
 		{
@@ -53,7 +52,6 @@ namespace UdemyRabbitMQWeb.ExcelCreate.Controllers
 			{
 				FileId = userfile.Id,
 			});
-
 			TempData["StartCreatingExcel"] = true;
 
 			return RedirectToAction(nameof(Files));
@@ -62,8 +60,6 @@ namespace UdemyRabbitMQWeb.ExcelCreate.Controllers
 		public async Task<IActionResult> Files()
 		{
 			var user = await _userManager.FindByNameAsync(User.Identity.Name);
-
-
 
 			return View(await _appDbContext.UserFiles.Where(x => x.UserId == user.Id).OrderByDescending(x => x.Id).ToListAsync());
 		}

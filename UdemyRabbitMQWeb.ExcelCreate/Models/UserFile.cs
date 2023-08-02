@@ -19,9 +19,7 @@ namespace UdemyRabbitMQWeb.ExcelCreate.Models
 		public FileStatus FileStatus { get; set; }
 
 
-		[NotMapped]
+		[NotMapped] // DB a yazilmasin deye bele deyirik.
 		public string GetCreatedDate => CreatedDate.HasValue ? CreatedDate.Value.ToShortDateString() : "-";
-
-
 	}
 }
